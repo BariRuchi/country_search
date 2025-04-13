@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"reflect"
 	"time"
 )
 
@@ -44,7 +45,8 @@ func (a *ApiClient) FetchCountryDataFromAPI(ctx context.Context, countryName str
 
 	response.Name = countryData["name"].(map[string]interface{})["common"].(string)
 	response.Capital = countryData["capital"].([]interface{})[0].(string)
-	response.Currency = countryData["currencies"].(map[string]interface{})["symbol"].(string)
+	currencyCode := reflect.ValueOf(countryData["currencies"]).MapKeys()[0].String()
+	response.Currency = countryData["currencies"].(map[string]interface{})[currencyCode].(map[string]interface{})["symbol"].(string)
 	response.Population = int(countryData["population"].(float64))
 
 	return response, nil
