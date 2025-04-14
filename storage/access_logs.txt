@@ -1,0 +1,41 @@
+[2025-04-14T13:18:57+05:30] Fetching Response For Country : India
+[2025-04-14T13:18:57+05:30] Cache Key : india
+[2025-04-14T13:18:59+05:30] Fetching Response For Country : India
+[2025-04-14T13:18:59+05:30] Cache Key : india
+[2025-04-14T13:18:59+05:30] Fetching Response For Country : India
+[2025-04-14T13:18:59+05:30] Cache Key : india
+[2025-04-14T13:19:00+05:30] Fetching Response For Country : India
+[2025-04-14T13:19:00+05:30] Cache Key : india
+[2025-04-14T13:19:05+05:30] Fetching Response For Country : India
+[2025-04-14T13:19:05+05:30] Cache Key : india
+[2025-04-14T13:19:35+05:30] Fetching Response For Country : India
+[2025-04-14T13:19:35+05:30] Cache Key : india
+[2025-04-14T13:19:36+05:30] Fetching Response For Country : India
+[2025-04-14T13:19:36+05:30] Cache Key : india
+[2025-04-14T13:19:36+05:30] Fetching Response For Country : India
+[2025-04-14T13:19:36+05:30] Cache Key : india
+[2025-04-14T13:20:36+05:30] Fetching Response For Country : India
+[2025-04-14T13:20:36+05:30] Cache Key : india
+[2025-04-14T13:21:52+05:30] Fetching Response For Country : India
+[2025-04-14T13:22:09+05:30] Cache Key : india
+[2025-04-14T13:22:49+05:30] Fetching Response For Country : India
+[2025-04-14T13:22:49+05:30] Cache Key : india
+[2025-04-14T13:22:50+05:30] Api Call Response : {"name":"India","capital":"New Delhi","currency":"₹","population":1380004385}
+[2025-04-14T13:22:50+05:30] Setting Response In cache : {"name":"India","capital":"New Delhi","currency":"₹","population":1380004385}
+[2025-04-14T13:26:42+05:30] Fetching Response For Country : India2
+[2025-04-14T13:26:42+05:30] Cache Key : india2
+[2025-04-14T13:30:27+05:30] Fetching Response For Country : India2
+[2025-04-14T13:30:27+05:30] Cache Key : india2
+[2025-04-14T13:30:33+05:30] Fetching Response For Country : India
+[2025-04-14T13:30:33+05:30] Cache Key : india
+[2025-04-14T13:30:33+05:30] Api Call Response : {"name":"India","capital":"New Delhi","currency":"₹","population":1380004385}
+[2025-04-14T13:30:33+05:30] Setting Response In cache : {"name":"India","capital":"New Delhi","currency":"₹","population":1380004385}
+[2025-04-14T13:30:42+05:30] Fetching Response For Country : India
+[2025-04-14T13:30:42+05:30] Cache Key : india
+[2025-04-14T13:30:42+05:30] Cache Response : {"name":"India","capital":"New Delhi","currency":"₹","population":1380004385}
+[2025-04-14T13:30:44+05:30] Fetching Response For Country : India
+[2025-04-14T13:30:44+05:30] Cache Key : india
+[2025-04-14T13:30:44+05:30] Cache Response : {"name":"India","capital":"New Delhi","currency":"₹","population":1380004385}
+[2025-04-14T13:30:59+05:30] Fetching Response For Country : India
+[2025-04-14T13:30:59+05:30] Cache Key : india
+[2025-04-14T13:30:59+05:30] Cache Response : {"name":"India","capital":"New Delhi","currency":"₹","population":1380004385}
