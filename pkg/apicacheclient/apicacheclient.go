@@ -37,7 +37,7 @@ func (cli *ApiCacheClient) GetCountryData(ctx context.Context) (model.Response, 
 
 	countryDetails, err := cli.apiClient.FetchCountryDataFromAPI(ctx, cli.inbound.Name)
 	if err != nil {
-		logs.LogError(fmt.Errorf("error while fetching contry data : %s", err.Error()))
+		logs.LogError(fmt.Errorf("error while fetching data for Country %s : %s", cli.inbound.Name, err.Error()))
 		return response, err
 	}
 
