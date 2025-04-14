@@ -1,6 +1,8 @@
 package cache
 
 import (
+	"strconv"
+	"sync"
 	"testing"
 	"time"
 )
@@ -74,4 +76,36 @@ func TestUpdateTTL(t *testing.T) {
 	if !ok || val.(int) != 2 {
 		t.Errorf("Expected renewed TTL and value 2, got %v", val)
 	}
+}
+
+func TestLRUCacheRaceCondition(t *testing.T) {
+	cache := NewLRUCache(100, 2*time.Second) // your LRUCache constructor
+
+	var wg sync.WaitGroup
+	numGoroutines := 10
+	iterations := 20
+
+	for i := 0; i < numGoroutines; i++ {
+		wg.Add(2)
+
+		// Writer goroutine
+		go func(id int) {
+			defer wg.Done()
+			for j := 0; j < iterations; j++ {
+				key := "key-" + strconv.Itoa(id) + "-" + strconv.Itoa(j)
+				cache.Set(key, "val-"+strconv.Itoa(j))
+			}
+		}(i)
+
+		// Reader goroutine
+		go func(id int) {
+			defer wg.Done()
+			for j := 0; j < iterations; j++ {
+				key := "key-" + strconv.Itoa(id) + "-" + strconv.Itoa(j)
+				cache.Get(key)
+			}
+		}(i)
+	}
+
+	wg.Wait()
 }

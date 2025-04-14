@@ -1,10 +1,10 @@
 package countryhandler
 
 import (
-	"CountrySearch/countrysearch"
 	"CountrySearch/inbound"
 	"CountrySearch/lib/cache"
 	"CountrySearch/logs"
+	"CountrySearch/pkg/countrysearch"
 	"net/http"
 	"sync"
 	"time"

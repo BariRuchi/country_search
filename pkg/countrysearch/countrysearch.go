@@ -1,11 +1,11 @@
 package countrysearch
 
 import (
-	"CountrySearch/apicacheclient"
-	"CountrySearch/apicacheclient/helper"
 	"CountrySearch/inbound"
 	"CountrySearch/lib/cache"
 	"CountrySearch/logs"
+	"CountrySearch/pkg/apicacheclient"
+	"CountrySearch/pkg/apicacheclient/helper"
 	"context"
 	"encoding/json"
 	"fmt"
