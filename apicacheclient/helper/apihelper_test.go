@@ -1,4 +1,4 @@
-package apiclient
+package helper
 
 import (
 	"CountrySearch/model"

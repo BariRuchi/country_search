@@ -1,9 +1,10 @@
 package countryhandler
 
 import (
-	"CountrySearch/apicacheclient/cache"
 	"CountrySearch/countrysearch"
 	"CountrySearch/inbound"
+	"CountrySearch/lib/cache"
+	"CountrySearch/logs"
 	"net/http"
 	"sync"
 	"time"
@@ -19,6 +20,12 @@ type Handler struct {
 
 func (ch *Handler) CountryHandler(w http.ResponseWriter, r *http.Request) {
 
+	errorLogChan := make(chan logs.LogMessage, 100)  // buffered to avoid blocking
+	accessLogChan := make(chan logs.LogMessage, 100) // buffered to avoid blocking
+	// Start log processor goroutine
+	go logs.ErrorLogWriter(errorLogChan)
+	go logs.AccessLogWriter(accessLogChan)
+
 	inbound := inbound.CountrySearchInput{}
 	inbound.Name = r.URL.Query().Get("name")
 	if inbound.Name == "" {
@@ -26,7 +33,7 @@ func (ch *Handler) CountryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ctx := r.Context()
-	app := countrysearch.New(inbound, ch.lruCacheClient)
+	app := countrysearch.New(inbound, ch.lruCacheClient, errorLogChan, accessLogChan)
 	appResponse, isValidResponse := app.ServeRequest(ctx)
 	if isValidResponse {
 		w.WriteHeader(http.StatusOK)

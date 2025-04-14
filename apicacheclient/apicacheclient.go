@@ -1,21 +1,24 @@
 package apicacheclient
 
 import (
-	"CountrySearch/apicacheclient/apiclient"
-	"CountrySearch/apicacheclient/cache"
+	"CountrySearch/apicacheclient/helper"
 	"CountrySearch/inbound"
+	"CountrySearch/lib/cache"
+	"CountrySearch/logs"
 	"CountrySearch/model"
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"strings"
+	"time"
 )
 
 type ApiCacheClient struct {
-	apiClient *apiclient.ApiClient
-	lruCache  *cache.LRUCache
-	inbound   inbound.CountrySearchInput
+	apiClient     *helper.ApiClient
+	lruCache      *cache.LRUCache
+	inbound       inbound.CountrySearchInput
+	errorLogChan  chan logs.LogMessage
+	accessLogChan chan logs.LogMessage
 }
 
 func (cli *ApiCacheClient) GetCountryData(ctx context.Context) (model.Response, error) {
@@ -27,38 +30,50 @@ func (cli *ApiCacheClient) GetCountryData(ctx context.Context) (model.Response, 
 		value := val.(string)
 		err := json.Unmarshal([]byte(value), &response)
 		if err != nil {
-			err = fmt.Errorf("err while unmarshaling cache reponse : %s", err.Error())
-			log.Print(err.Error())
+			cli.errorLogChan <- logs.CreateErrorLogMessage(fmt.Errorf("err while unmarshaling cache reponse : %s", err.Error()))
 			return response, err
 		}
-		fmt.Printf("Cache Response : %s", value)
+
+		cli.accessLogChan <- logs.LogMessage{
+			Time:    time.Now(),
+			Message: fmt.Sprintf("Cache Response : %s", value),
+		}
 		return response, nil
 	}
 
 	countryDetails, err := cli.apiClient.FetchCountryDataFromAPI(ctx, cli.inbound.Name)
 	if err != nil {
-		err = fmt.Errorf("error while fetching contry data : %s", err.Error())
-		log.Print(err.Error())
+		cli.errorLogChan <- logs.CreateErrorLogMessage(fmt.Errorf("error while fetching contry data : %s", err.Error()))
 		return response, err
 	}
 
 	cacheVal, err := json.Marshal(countryDetails)
-	if err == nil {
-		cli.lruCache.Set(key, string(cacheVal))
+	if err != nil {
+		cli.errorLogChan <- logs.CreateErrorLogMessage(fmt.Errorf("error while unmarshaling Response : %s", err.Error()))
+		return response, err
 	}
+
+	cli.accessLogChan <- logs.CreateAccessLogMessage(fmt.Sprintf("Api Call Response : %s", cacheVal))
+
+	val := string(cacheVal)
+	cli.accessLogChan <- logs.CreateAccessLogMessage(fmt.Sprintf("Setting Response In cache : %s", val))
+	cli.lruCache.Set(key, val)
+
 	return countryDetails, nil
 }
 
 func (cli *ApiCacheClient) getCacheKey() string {
 	key := strings.ToLower(cli.inbound.Name)
-	log.Printf("Cache key :%s", key)
+	cli.accessLogChan <- logs.CreateAccessLogMessage(fmt.Sprintf("Cache Key : %s", key))
 	return key
 }
 
-func New(apiClient *apiclient.ApiClient, lruCache *cache.LRUCache, inbound inbound.CountrySearchInput) *ApiCacheClient {
+func New(apiClient *helper.ApiClient, lruCache *cache.LRUCache, inbound inbound.CountrySearchInput, errorLogChan, accessLogChan chan logs.LogMessage) *ApiCacheClient {
 	cli := new(ApiCacheClient)
 	cli.apiClient = apiClient
 	cli.lruCache = lruCache
 	cli.inbound = inbound
+	cli.errorLogChan = errorLogChan
+	cli.accessLogChan = accessLogChan
 	return cli
 }

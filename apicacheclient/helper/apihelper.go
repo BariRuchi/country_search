@@ -1,13 +1,13 @@
-package apiclient
+package helper
 
 import (
+	"CountrySearch/lib/apicall"
 	"CountrySearch/model"
 	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"reflect"
-	"time"
 )
 
 var URL = "https://restcountries.com/v3.1/name/"
@@ -19,15 +19,10 @@ func (a *ApiClient) FetchCountryDataFromAPI(ctx context.Context, countryName str
 	response := model.Response{}
 	url := URL + countryName
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	apiCall := apicall.New(ctx, url)
+	resp, err := apiCall.Call()
 	if err != nil {
-		return response, fmt.Errorf("request creation error: %w", err)
-	}
-
-	client := &http.Client{Timeout: 5 * time.Second}
-	resp, err := client.Do(req)
-	if err != nil {
-		return response, fmt.Errorf("http request error: %w", err)
+		return response, err
 	}
 	defer resp.Body.Close()
 
