@@ -14,18 +14,16 @@ import (
 type CountrySearch struct {
 	inbound        inbound.CountrySearchInput
 	lruCacheClient *cache.LRUCache
-	errorLogChan   chan logs.LogMessage
-	accessLogChan  chan logs.LogMessage
 }
 
 func (cs *CountrySearch) ServeRequest(ctx context.Context) (string, bool) {
 
-	cs.accessLogChan <- logs.CreateAccessLogMessage(fmt.Sprintf("Fetching Response For Country : %s", cs.inbound.Name))
+	logs.LogAccess(fmt.Sprintf("Fetching Response For Country : %s", cs.inbound.Name))
 
 	var valid = true
 	apiClient := helper.New()
 
-	apiCacheClient := apicacheclient.New(apiClient, cs.lruCacheClient, cs.inbound, cs.errorLogChan, cs.accessLogChan)
+	apiCacheClient := apicacheclient.New(apiClient, cs.lruCacheClient, cs.inbound)
 	countryData, err := apiCacheClient.GetCountryData(ctx)
 	if err != nil {
 		countryData.Error = err.Error()
@@ -34,18 +32,16 @@ func (cs *CountrySearch) ServeRequest(ctx context.Context) (string, bool) {
 
 	finalResponse, err := json.Marshal(countryData)
 	if err != nil {
-		cs.errorLogChan <- logs.CreateErrorLogMessage(fmt.Errorf("error unmarshaling response:%s", err.Error()))
+		logs.LogError(fmt.Errorf("error unmarshaling response:%s", err.Error()))
 		valid = false
 	}
 
 	return string(finalResponse), valid
 }
 
-func New(inbound inbound.CountrySearchInput, lruCacheClient *cache.LRUCache, errorLogChan, accessLogChan chan logs.LogMessage) *CountrySearch {
+func New(inbound inbound.CountrySearchInput, lruCacheClient *cache.LRUCache) *CountrySearch {
 	cs := new(CountrySearch)
 	cs.inbound = inbound
 	cs.lruCacheClient = lruCacheClient
-	cs.errorLogChan = errorLogChan
-	cs.accessLogChan = accessLogChan
 	return cs
 }
