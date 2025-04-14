@@ -1,0 +1,50 @@
+openapi: 3.0.3
+info:
+  title: CountrySearch API
+  description: Get country information including capital, currency symbol, and population.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000
+
+paths:
+  /api/countries/search:
+    get:
+      summary: Search country info by name
+      description: Returns basic details about a country including capital, currency symbol, and population.
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          required: true
+          description: Name of the country to search
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountryResponse'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+components:
+  schemas:
+    CountryResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          example: India
+        capital:
+          type: string
+          example: New Delhi
+        currency:
+          type: string
+          example: ₹
+        population:
+          type: integer
+          example: 1380004385
