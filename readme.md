@@ -14,6 +14,15 @@ A simple Go-based REST API that fetches country information (name, capital, curr
 
 ---
 
+### API Documentation
+You can test and explore the API interactively using Swagger Editor:
+
+- Visit: https://editor.swagger.io
+- Click on File > Import file or Paste swagger.yaml file
+
+
+---
+
 ##  Setup Instructions
 
 ###  Prerequisites
@@ -35,3 +44,6 @@ go test ./... -v -cover
 
 # Run the server
 go run main.go
+
+
+
