@@ -5,7 +5,6 @@ import (
 	"CountrySearch/lib/cache"
 	"CountrySearch/pkg/countrysearch"
 	"net/http"
-	"sync"
 	"time"
 )
 
@@ -13,8 +12,7 @@ const MaxCapacity = 20
 const ttl = 2 * time.Hour
 
 type Handler struct {
-	lruCacheClientOnce sync.Once
-	lruCacheClient     *cache.LRUCache
+	lruCacheClient *cache.LRUCache
 }
 
 func (ch *Handler) CountryHandler(w http.ResponseWriter, r *http.Request) {
@@ -36,11 +34,9 @@ func (ch *Handler) CountryHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func (ch *Handler) setCacheClient() *cache.LRUCache {
-	ch.lruCacheClientOnce.Do(func() {
-		ch.lruCacheClient = cache.NewLRUCache(MaxCapacity, ttl)
-	})
-	return ch.lruCacheClient
+func (ch *Handler) setCacheClient() {
+	ch.lruCacheClient = cache.NewLRUCache(MaxCapacity, ttl)
+	return
 }
 
 func New() *Handler {
